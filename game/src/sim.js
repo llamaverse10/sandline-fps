@@ -395,8 +395,8 @@ function updateBomb(state, dt, input) {
       }
     }
   }
-  // Player planting (hold E inside the site).
-  if (bomb.status === 'carried' && player.alive && player.hasBomb && state.phase === 'live') {
+  // Player planting (hold E inside the site). Not during buy time.
+  if (bomb.status === 'carried' && player.alive && player.hasBomb && state.phase === 'live' && state.buyLeft <= 0) {
     if (input.use && distToSite(player) <= SITE.r && player.onGround) {
       player.planting += dt;
       if (player.planting >= PLANT_TIME) {
@@ -509,11 +509,13 @@ export function stepGame(state, input, dt) {
   }
 
   // --- player weapon ---
+  // Buy time is a setup window: nobody shoots or plants until it ends, so
+  // the spawn is safe while the player shops and positions. Buying stays open.
   if (player.alive && state.phase === 'live') {
     const def = WEAPONS[player.weapon];
     if (input.reload) startReload(state, player);
-    if (input.grenadeEdge) throwGrenade(state, player, dirFromYawPitch(player.yaw, player.pitch));
-    if (input.firing) {
+    if (state.buyLeft <= 0 && input.grenadeEdge) throwGrenade(state, player, dirFromYawPitch(player.yaw, player.pitch));
+    if (state.buyLeft <= 0 && input.firing) {
       const spread = currentSpread(def, player.speed, player.bloom, player.crouched, input.ads);
       fireWeapon(state, player, dirFromYawPitch(player.yaw, player.pitch), spread);
     }
@@ -529,10 +531,17 @@ export function stepGame(state, input, dt) {
   // --- bots ---
   if (state.phase === 'live' || state.phase === 'freeze') {
     const api = {
-      fire: (shooter, dir, spread) => fireWeapon(state, shooter, dir, spread),
+      fire: (shooter, dir, spread) => {
+        if (state.buyLeft > 0) return false;
+        return fireWeapon(state, shooter, dir, spread);
+      },
       reload: (e) => startReload(state, e),
-      throwGrenade: (e, dir) => throwGrenade(state, e, dir),
+      throwGrenade: (e, dir) => {
+        if (state.buyLeft > 0) return false;
+        return throwGrenade(state, e, dir);
+      },
       plant: (e) => {
+        if (state.buyLeft > 0) return false;
         if (state.bomb.status !== 'carried' || !e.hasBomb) return false;
         if (distToSite(e) > SITE.r) return false;
         e.planting += dt;
