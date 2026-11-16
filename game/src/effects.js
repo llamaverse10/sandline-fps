@@ -44,6 +44,30 @@ export class Effects {
     this.buildFlashes();
     this.buildExplosions();
     this.buildViewmodel();
+    this.buildBomb();
+  }
+
+  buildBomb() {
+    // The planted/dropped bomb: a dark case with a blinking red light, so the
+    // objective is visible in the world (not just in the HUD).
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(
+      new THREE.BoxGeometry(0.45, 0.28, 0.32),
+      new THREE.MeshStandardMaterial({ color: 0x22201e, roughness: 0.5, metalness: 0.6 }),
+    );
+    body.position.y = 0.14;
+    body.castShadow = true;
+    g.add(body);
+    const light = new THREE.Mesh(
+      new THREE.SphereGeometry(0.06, 10, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff2a1a }),
+    );
+    light.position.set(0.14, 0.32, 0);
+    g.add(light);
+    g.visible = false;
+    this.scene.add(g);
+    this.bombMesh = g;
+    this.bombLight = light;
   }
 
   buildLights() {
@@ -200,7 +224,7 @@ export class Effects {
         map: tex, color: PALETTE.muzzle, transparent: true, opacity: 0, depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      s.scale.set(0.45, 0.45, 1);
+      s.scale.set(0.35, 0.35, 1);
       this.scene.add(s);
       this.flashPool.push(s);
     }
@@ -337,7 +361,7 @@ export class Effects {
         flashOn = true;
         if (i === 0) {
           this.flashLight.position.set(f.x, f.y, f.z);
-          this.flashLight.intensity = 14;
+          this.flashLight.intensity = 8;
         }
       } else {
         s.visible = false;
@@ -360,6 +384,19 @@ export class Effects {
       } else {
         slot.mesh.visible = false;
         slot.light.intensity = 0;
+      }
+    }
+    // --- planted / dropped bomb ---
+    if (this.bombMesh) {
+      const b = state.bomb;
+      if (b.status === 'planted' || b.status === 'dropped') {
+        this.bombMesh.visible = true;
+        this.bombMesh.position.set(b.x, 0, b.z);
+        const blink = b.status === 'planted' ? 0.5 + 0.5 * Math.sin(state.time * 6) : 0.7;
+        this.bombLight.material.opacity = blink;
+        this.bombLight.material.transparent = true;
+      } else {
+        this.bombMesh.visible = false;
       }
     }
     // --- site ring pulse ---
