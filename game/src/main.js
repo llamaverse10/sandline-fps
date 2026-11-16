@@ -86,6 +86,7 @@ function main() {
       const d = byName('Dune'); if (d) { d.x = -25.5; d.z = -2.5; d.yaw = -Math.PI / 2; }
       const s = byName('Sirocco'); if (s) { s.x = -25.5; s.z = 2.5; s.yaw = -Math.PI / 2; }
       const j = byName('Jackal'); if (j) { j.x = 8; j.z = 1; j.yaw = Math.PI / 2; }
+      hud.showBanner('ROUND 1', 'Plant the bomb at the Depot — first to 8', true);
     } else if (SHOT === 'fight') {
       state.phase = 'live';
       state.roundTime = 78;
@@ -104,7 +105,6 @@ function main() {
       const dir = { x: -Math.sin(p.yaw), y: 0, z: -Math.cos(p.yaw) };
       import('./sim.js').then(({ fireWeapon }) => {
         fireWeapon(state, p, dir, 0.4);
-        state.killfeed.push({ killer: 'Dune', victim: 'Fennec', weapon: 'vk47', headshot: false, t: state.time });
         hud.flashHitmarker(false);
       });
     } else if (SHOT === 'plant') {
@@ -115,8 +115,8 @@ function main() {
       state.bomb.x = SITE.x;
       state.bomb.z = SITE.z;
       state.bomb.fuseT = 32;
-      p.x = 17; p.z = 3; p.y = 0; p.yaw = -1.21; p.pitch = -0.01;
-      p.crouched = true;
+      p.x = 15.5; p.z = 3.5; p.y = 0; p.yaw = -1.22; p.pitch = -0.01;
+      p.crouched = false;
       p.weapon = 'mr4';
       const s = byName('Scorpion');
       if (s) { s.x = 24; s.z = -6; s.yaw = 2.5; }
@@ -133,6 +133,9 @@ function main() {
       overview = { x: -2, y: 26, z: 20, tx: 22, ty: 0, tz: -2 };
       hud.showBanner('ROUND WON', 'Depot detonated — Dusters take round 1', true);
     }
+    // Discard the roundStart event createGame queued, so it cannot overwrite
+    // the banner this shot mode chose (spawn/win set their own above).
+    state.events.length = 0;
     shotSetupDone = true;
   }
 

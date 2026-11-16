@@ -8,6 +8,21 @@ import { PALETTE, makeMaterials } from './palette.js';
 const MAX_TRACERS = 24;
 const MAX_IMPACTS = 64;
 
+// Soft radial blob texture (canvas-generated) so sprites read as glow, not squares.
+function radialTexture() {
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32, 32, 2, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.4, 'rgba(255,255,255,0.7)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
 export class Effects {
   constructor(scene) {
     this.scene = scene;
@@ -48,7 +63,7 @@ export class Effects {
     this.sun = sun;
     // Low amber sun disc on the horizon (east, where the Depot sits).
     const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      color: 0xffc46b, transparent: true, opacity: 0.95, depthWrite: false,
+      map: radialTexture(), color: 0xffc46b, transparent: true, opacity: 0.95, depthWrite: false,
     }));
     sunSprite.scale.set(26, 26, 1);
     sunSprite.position.set(90, 14, 0);
@@ -179,12 +194,13 @@ export class Effects {
   }
 
   buildFlashes() {
+    const tex = radialTexture();
     for (let i = 0; i < 8; i++) {
       const s = new THREE.Sprite(new THREE.SpriteMaterial({
-        color: PALETTE.muzzle, transparent: true, opacity: 0, depthWrite: false,
+        map: tex, color: PALETTE.muzzle, transparent: true, opacity: 0, depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      s.scale.set(0.9, 0.9, 1);
+      s.scale.set(0.45, 0.45, 1);
       this.scene.add(s);
       this.flashPool.push(s);
     }
