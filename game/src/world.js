@@ -79,8 +79,8 @@ export const BOXES = [
 // Bombsite: centre + radius (planting must happen inside this circle, on the ground).
 export const SITE = { x: 25, z: 0, r: 6.5 };
 export const SPAWNS = {
-  attack: { x: -28, z: 0, yaw: Math.PI / 2 }, // facing east (+x)
-  defend: { x: 28, z: 0, yaw: -Math.PI / 2 }, // facing west (-x)
+  attack: { x: -28, z: 0, yaw: -Math.PI / 2 }, // facing east (+x): dir = (-sin yaw, -cos yaw)
+  defend: { x: 28, z: 0, yaw: Math.PI / 2 }, // facing west (-x)
 };
 
 // --- collision -------------------------------------------------------------

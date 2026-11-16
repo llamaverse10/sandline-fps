@@ -32,9 +32,9 @@ export class Effects {
   }
 
   buildLights() {
-    const hemi = new THREE.HemisphereLight(0xffd9a0, 0x8a6a4a, 0.85);
+    const hemi = new THREE.HemisphereLight(0xffd9a0, 0x8a6a4a, 1.0);
     this.scene.add(hemi);
-    const sun = new THREE.DirectionalLight(0xffb36b, 2.4);
+    const sun = new THREE.DirectionalLight(0xffb36b, 2.8);
     sun.position.set(-30, 38, -18);
     sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024);
@@ -208,8 +208,8 @@ export class Effects {
   buildViewmodel() {
     // A blocky rifle assembled from boxes, parented to the camera.
     const g = new THREE.Group();
-    const dark = this.mats.dark;
-    const steel = this.mats.railSteel;
+    const dark = new THREE.MeshStandardMaterial({ color: 0x3a332e, roughness: 0.6, metalness: 0.4 });
+    const steel = new THREE.MeshStandardMaterial({ color: 0x6b5a44, roughness: 0.5, metalness: 0.55 });
     const add = (w, h, d, x, y, z, mat) => {
       const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat || steel);
       m.position.set(x, y, z);
@@ -225,13 +225,18 @@ export class Effects {
     this.muzzleTip = new THREE.Object3D();
     this.muzzleTip.position.set(0, 0.02, -0.72);
     g.add(this.muzzleTip);
-    g.position.set(0.34, -0.32, -0.55);
+    g.scale.setScalar(0.8);
+    g.position.set(0.3, -0.28, -0.5);
     this.viewmodel = g;
     this.viewmodelBase = g.position.clone();
   }
 
   attachViewmodel(camera) {
     camera.add(this.viewmodel);
+    // A soft fill light on the camera so the viewmodel and near walls read.
+    this.fill = new THREE.PointLight(0xffe0b0, 1.6, 2.6, 1.4);
+    this.fill.position.set(0.2, 0.15, 0.1);
+    camera.add(this.fill);
   }
 
   // One bot mesh per entity, built lazily.

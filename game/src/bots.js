@@ -16,7 +16,8 @@ const ROTATE_SPEED = 4.3;
 const HOLD_NODE = { site: 19, mid: 11, a: 5, b: 17 };
 
 // Where a bot looks while holding: the angle it faces (radians, yaw).
-const HOLD_YAW = { site: -Math.PI / 2, mid: -Math.PI / 2, a: -Math.PI / 2, b: -Math.PI / 2 };
+// Defenders face west, toward the attackers' approaches.
+const HOLD_YAW = { site: Math.PI / 2, mid: Math.PI / 2, a: Math.PI / 2, b: Math.PI / 2 };
 
 function eyeY(e) {
   return e.y + 1.55;
@@ -246,7 +247,7 @@ function updateBot(state, bot, dt, api) {
       moveEntity(bot, 0, 0, dt);
       // Slow scan: sweep the view across the lane the bot is watching.
       b.holdT += dt;
-      const base = bot.team === 'D' ? HOLD_YAW[b.lane] ?? -Math.PI / 2 : bot.yaw;
+      const base = bot.team === 'D' ? HOLD_YAW[b.lane] ?? Math.PI / 2 : bot.yaw;
       const sweep = Math.sin(b.holdT * 0.5) * 0.6;
       let diff = base + sweep - bot.yaw;
       while (diff > Math.PI) diff -= Math.PI * 2;

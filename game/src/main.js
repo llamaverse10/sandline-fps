@@ -80,25 +80,25 @@ function main() {
       state.phase = 'freeze';
       state.phaseT = 2.5;
       state.buyLeft = 12;
-      p.x = -27; p.z = 0; p.y = 0; p.yaw = Math.PI / 2 - 0.12; p.pitch = -0.02;
+      p.x = -27; p.z = 0; p.y = 0; p.yaw = -Math.PI / 2; p.pitch = -0.02;
       p.money = 3200;
       p.weapon = 'vk47';
-      const d = byName('Dune'); if (d) { d.x = -25.5; d.z = -2.5; d.yaw = Math.PI / 2; }
-      const s = byName('Sirocco'); if (s) { s.x = -25.5; s.z = 2.5; s.yaw = Math.PI / 2; }
-      const j = byName('Jackal'); if (j) { j.x = 8; j.z = 1; j.yaw = -Math.PI / 2; }
+      const d = byName('Dune'); if (d) { d.x = -25.5; d.z = -2.5; d.yaw = -Math.PI / 2; }
+      const s = byName('Sirocco'); if (s) { s.x = -25.5; s.z = 2.5; s.yaw = -Math.PI / 2; }
+      const j = byName('Jackal'); if (j) { j.x = 8; j.z = 1; j.yaw = Math.PI / 2; }
     } else if (SHOT === 'fight') {
       state.phase = 'live';
       state.roundTime = 78;
       state.buyLeft = 0;
-      p.x = -6; p.z = 0; p.y = 0; p.yaw = Math.PI / 2 - 0.08; p.pitch = 0.01;
+      p.x = -6; p.z = 0; p.y = 0; p.yaw = -1.64; p.pitch = 0.01;
       p.weapon = 'vk47';
       p.mag = 24;
       const j = byName('Jackal');
-      if (j) { j.x = 8; j.z = 1; j.y = 0; j.yaw = -Math.PI / 2; j.hp = 62; }
+      if (j) { j.x = 8; j.z = 1; j.y = 0; j.yaw = Math.PI / 2 + 0.07; j.hp = 62; }
       const v = byName('Viper');
-      if (v) { v.x = 12; v.z = -4; v.yaw = -Math.PI / 2 - 0.4; }
+      if (v) { v.x = 12; v.z = -4; v.yaw = Math.PI / 2 - 0.3; }
       const d = byName('Dune');
-      if (d) { d.x = -8; d.z = -3; d.yaw = Math.PI / 2; }
+      if (d) { d.x = -8; d.z = -3; d.yaw = -Math.PI / 2; }
       // One real shot from the player so the frame carries a live tracer,
       // muzzle flash and impact; then the sim freezes and the frame holds.
       const dir = { x: -Math.sin(p.yaw), y: 0, z: -Math.cos(p.yaw) };
@@ -115,13 +115,13 @@ function main() {
       state.bomb.x = SITE.x;
       state.bomb.z = SITE.z;
       state.bomb.fuseT = 32;
-      p.x = 17; p.z = 3; p.y = 0; p.yaw = Math.PI / 2 + 0.35; p.pitch = -0.01;
+      p.x = 17; p.z = 3; p.y = 0; p.yaw = -1.21; p.pitch = -0.01;
       p.crouched = true;
       p.weapon = 'mr4';
       const s = byName('Scorpion');
-      if (s) { s.x = 24; s.z = -6; s.yaw = -Math.PI / 2 + 0.5; }
+      if (s) { s.x = 24; s.z = -6; s.yaw = 2.5; }
       const c = byName('Cobra');
-      if (c) { c.x = 27; c.z = 5; c.yaw = -Math.PI / 2; }
+      if (c) { c.x = 27; c.z = 5; c.yaw = Math.PI / 2; }
     } else if (SHOT === 'win') {
       state.phase = 'roundEnd';
       state.phaseT = 4.5;
@@ -129,7 +129,7 @@ function main() {
       state.scoreD = 0;
       state.roundWinner = 'A';
       state.roundReason = 'Depot detonated';
-      p.x = 20; p.z = -2; p.y = 0; p.yaw = Math.PI / 2; p.pitch = 0;
+      p.x = 20; p.z = -2; p.y = 0; p.yaw = -Math.PI / 2; p.pitch = 0;
       overview = { x: -2, y: 26, z: 20, tx: 22, ty: 0, tz: -2 };
       hud.showBanner('ROUND WON', 'Depot detonated — Dusters take round 1', true);
     }
