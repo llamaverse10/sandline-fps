@@ -170,9 +170,9 @@ export function fireWeapon(state, shooter, dir, spreadDeg) {
     if (th < bestDist) { bestDist = th; bestVictim = e; bestHead = true; }
     if (tb < bestDist) { bestDist = tb; bestVictim = e; bestHead = false; }
   }
-  const hx = eye.x + dx * bestDist;
-  const hy = eye.y + dy * bestDist;
-  const hz = eye.z + dz * bestDist;
+  const hx = eye.x + dx * (Number.isFinite(bestDist) ? bestDist : 60);
+  const hy = eye.y + dy * (Number.isFinite(bestDist) ? bestDist : 60);
+  const hz = eye.z + dz * (Number.isFinite(bestDist) ? bestDist : 60);
   state.tracers.push({ x1: muzzle.x, y1: muzzle.y, z1: muzzle.z, x2: hx, y2: hy, z2: hz, color: def.tracer, ttl: 0.07 });
   pushEvent(state, { type: 'shot', by: shooter.id, weapon: shooter.weapon, dist: bestDist });
 

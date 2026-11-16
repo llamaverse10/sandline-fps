@@ -51,7 +51,9 @@ export class Input {
   // Ask the browser for pointer lock (must come from a user gesture).
   lock() {
     try {
-      this.canvas.requestPointerLock();
+      const p = this.canvas.requestPointerLock();
+      // Newer Chrome returns a promise that rejects without a gesture.
+      if (p && p.catch) p.catch(() => {});
     } catch {
       // Pointer lock unavailable (headless / shot mode): mouse look is skipped.
     }
