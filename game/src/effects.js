@@ -225,8 +225,8 @@ export class Effects {
     this.muzzleTip = new THREE.Object3D();
     this.muzzleTip.position.set(0, 0.02, -0.72);
     g.add(this.muzzleTip);
-    g.scale.setScalar(0.8);
-    g.position.set(0.3, -0.28, -0.5);
+    g.scale.setScalar(0.65);
+    g.position.set(0.32, -0.3, -0.45);
     this.viewmodel = g;
     this.viewmodelBase = g.position.clone();
   }
